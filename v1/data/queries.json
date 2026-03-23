@@ -1,0 +1,82 @@
+[
+  {
+    "question": "How many trips were completed in each city?",
+    "sql": "SELECT pickup_city, COUNT(*) AS total_trips\nFROM trips\nWHERE status = 'completed'\nGROUP BY pickup_city\nORDER BY total_trips DESC;"
+  },
+  {
+    "question": "What is the total revenue collected from payments last month?",
+    "sql": "SELECT SUM(amount) AS total_revenue\nFROM payments\nWHERE status = 'success'\nAND paid_at >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month')\nAND paid_at < DATE_TRUNC('month', CURRENT_DATE);"
+  },
+  {
+    "question": "Which drivers have a rating below 4?",
+    "sql": "SELECT driver_id, full_name, city, rating, total_trips\nFROM drivers\nWHERE rating < 4\nAND status = 'active'\nORDER BY rating ASC;"
+  },
+  {
+    "question": "How many users signed up each month this year?",
+    "sql": "SELECT DATE_TRUNC('month', created_at) AS month,\n       COUNT(*) AS new_users\nFROM users\nWHERE created_at >= DATE_TRUNC('year', CURRENT_DATE)\nGROUP BY month\nORDER BY month ASC;"
+  },
+  {
+    "question": "What are the top 10 users by number of trips taken?",
+    "sql": "SELECT u.user_id, u.full_name, u.city, COUNT(t.trip_id) AS trip_count\nFROM users u\nJOIN trips t ON u.user_id = t.user_id\nWHERE t.status = 'completed'\nGROUP BY u.user_id, u.full_name, u.city\nORDER BY trip_count DESC\nLIMIT 10;"
+  },
+  {
+    "question": "How many trips were cancelled last week?",
+    "sql": "SELECT COUNT(*) AS cancelled_trips\nFROM trips\nWHERE status = 'cancelled'\nAND started_at >= CURRENT_DATE - INTERVAL '7 days';"
+  },
+  {
+    "question": "What is the average fare per city?",
+    "sql": "SELECT pickup_city, ROUND(AVG(fare_amount), 2) AS avg_fare\nFROM trips\nWHERE status = 'completed'\nGROUP BY pickup_city\nORDER BY avg_fare DESC;"
+  },
+  {
+    "question": "Which payment method is most used?",
+    "sql": "SELECT payment_method, COUNT(*) AS usage_count\nFROM payments\nWHERE status = 'success'\nGROUP BY payment_method\nORDER BY usage_count DESC;"
+  },
+  {
+    "question": "How many support tickets are still open grouped by category?",
+    "sql": "SELECT category, COUNT(*) AS open_tickets\nFROM support_tickets\nWHERE status IN ('open', 'in_progress')\nGROUP BY category\nORDER BY open_tickets DESC;"
+  },
+  {
+    "question": "List all drivers who joined in the last 30 days and are currently active.",
+    "sql": "SELECT driver_id, full_name, city, vehicle_type, joined_at\nFROM drivers\nWHERE status = 'active'\nAND joined_at >= CURRENT_DATE - INTERVAL '30 days'\nORDER BY joined_at DESC;"
+  },
+  {
+    "question": "What is the total refund amount issued this year?",
+    "sql": "SELECT SUM(amount) AS total_refunded\nFROM payments\nWHERE status = 'refunded'\nAND refunded_at >= DATE_TRUNC('year', CURRENT_DATE);"
+  },
+  {
+    "question": "How many trips did each driver complete this month?",
+    "sql": "SELECT d.driver_id, d.full_name, COUNT(t.trip_id) AS trips_this_month\nFROM drivers d\nJOIN trips t ON d.driver_id = t.driver_id\nWHERE t.status = 'completed'\nAND t.started_at >= DATE_TRUNC('month', CURRENT_DATE)\nGROUP BY d.driver_id, d.full_name\nORDER BY trips_this_month DESC;"
+  },
+  {
+    "question": "Which promotions are currently active and how many times have they been used?",
+    "sql": "SELECT code, discount_type, discount_value, used_count, max_uses, valid_until\nFROM promotions\nWHERE valid_from <= NOW()\nAND valid_until >= NOW()\nORDER BY used_count DESC;"
+  },
+  {
+    "question": "What is the average trip distance per vehicle type?",
+    "sql": "SELECT d.vehicle_type, ROUND(AVG(t.distance_km), 2) AS avg_distance_km\nFROM trips t\nJOIN drivers d ON t.driver_id = d.driver_id\nWHERE t.status = 'completed'\nGROUP BY d.vehicle_type\nORDER BY avg_distance_km DESC;"
+  },
+  {
+    "question": "How many users are inactive and have not logged in for more than 90 days?",
+    "sql": "SELECT COUNT(*) AS inactive_users\nFROM users\nWHERE last_login_at < CURRENT_DATE - INTERVAL '90 days'\nOR last_login_at IS NULL;"
+  },
+  {
+    "question": "What is the average rating given to drivers by city?",
+    "sql": "SELECT d.city, ROUND(AVG(r.score), 2) AS avg_driver_rating\nFROM ratings r\nJOIN drivers d ON r.rated_entity_id = d.driver_id\nWHERE r.rated_by = 'user'\nGROUP BY d.city\nORDER BY avg_driver_rating DESC;"
+  },
+  {
+    "question": "Which trips had a fare above 500 and were paid by wallet?",
+    "sql": "SELECT t.trip_id, t.pickup_city, t.dropoff_city, t.fare_amount, p.payment_method, p.paid_at\nFROM trips t\nJOIN payments p ON t.trip_id = p.trip_id\nWHERE t.fare_amount > 500\nAND p.payment_method = 'wallet'\nAND p.status = 'success'\nORDER BY t.fare_amount DESC;"
+  },
+  {
+    "question": "How many critical support tickets were raised this week?",
+    "sql": "SELECT COUNT(*) AS critical_tickets\nFROM support_tickets\nWHERE priority = 'critical'\nAND created_at >= DATE_TRUNC('week', CURRENT_DATE);"
+  },
+  {
+    "question": "What is the daily trip count for the last 7 days?",
+    "sql": "SELECT DATE(started_at) AS trip_date, COUNT(*) AS daily_trips\nFROM trips\nWHERE started_at >= CURRENT_DATE - INTERVAL '7 days'\nAND status = 'completed'\nGROUP BY trip_date\nORDER BY trip_date ASC;"
+  },
+  {
+    "question": "Which users have raised more than 3 support tickets?",
+    "sql": "SELECT u.user_id, u.full_name, u.email, COUNT(st.ticket_id) AS ticket_count\nFROM users u\nJOIN support_tickets st ON u.user_id = st.raised_by_id\nWHERE st.raised_by_type = 'user'\nGROUP BY u.user_id, u.full_name, u.email\nHAVING COUNT(st.ticket_id) > 3\nORDER BY ticket_count DESC;"
+  }
+]

@@ -1,0 +1,4 @@
+**/venv/**
+v2/app/__pycache__/**
+v2/app/agents/__pycache__/
+v2/app/core/__pycache__/

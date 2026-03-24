@@ -1,0 +1,27 @@
+[
+  {
+    "workspace": "mobility",
+    "description": "Covers trip operations, driver activity, vehicle data, trip lifecycle, and ride completion metrics. Use for questions about trips taken, driver performance, cancellations, fares, and distances.",
+    "tables": ["trips", "drivers"]
+  },
+  {
+    "workspace": "payments",
+    "description": "Covers payment transactions, refunds, payment methods, revenue analysis, and financial reconciliation. Use for questions about money collected, refunds issued, and payment failures.",
+    "tables": ["payments", "promotions"]
+  },
+  {
+    "workspace": "users",
+    "description": "Covers user registrations, user activity, login patterns, inactive users, and user demographics. Use for questions about user growth, signups, and user engagement.",
+    "tables": ["users"]
+  },
+  {
+    "workspace": "support",
+    "description": "Covers customer support tickets, complaint categories, resolution times, and escalations. Use for questions about open tickets, critical issues, and support workload.",
+    "tables": ["support_tickets"]
+  },
+  {
+    "workspace": "quality",
+    "description": "Covers ratings, reviews, and feedback given by users and drivers after trips. Use for questions about satisfaction scores, low-rated drivers, and feedback trends.",
+    "tables": ["ratings", "drivers"]
+  }
+]

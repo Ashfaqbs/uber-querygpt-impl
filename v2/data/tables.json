@@ -1,0 +1,37 @@
+[
+  {
+    "workspace": "mobility",
+    "table_name": "trips",
+    "content": "Table: trips\nDescription: Records every trip taken on the platform.\nColumns:\n  - trip_id (UUID): unique identifier for each trip\n  - user_id (UUID): foreign key to users table\n  - driver_id (UUID): foreign key to drivers table\n  - pickup_city (VARCHAR): city where trip started\n  - dropoff_city (VARCHAR): city where trip ended\n  - status (VARCHAR): completed, cancelled, ongoing\n  - fare_amount (DECIMAL): total fare charged to the user\n  - distance_km (DECIMAL): trip distance in kilometers\n  - started_at (TIMESTAMPTZ): when the trip started\n  - ended_at (TIMESTAMPTZ): when the trip ended"
+  },
+  {
+    "workspace": "mobility",
+    "table_name": "drivers",
+    "content": "Table: drivers\nDescription: Stores all registered drivers on the platform.\nColumns:\n  - driver_id (UUID): unique identifier for each driver\n  - full_name (VARCHAR): driver full name\n  - email (VARCHAR): driver email address\n  - phone_number (VARCHAR): driver contact number\n  - city (VARCHAR): city where driver operates\n  - vehicle_type (VARCHAR): bike, auto, cab, suv\n  - status (VARCHAR): active, inactive, suspended\n  - rating (DECIMAL): average driver rating out of 5\n  - total_trips (INTEGER): total number of trips completed\n  - joined_at (TIMESTAMPTZ): when the driver registered"
+  },
+  {
+    "workspace": "payments",
+    "table_name": "payments",
+    "content": "Table: payments\nDescription: Records all payment transactions for trips.\nColumns:\n  - payment_id (UUID): unique identifier for each payment\n  - trip_id (UUID): foreign key to trips table\n  - user_id (UUID): foreign key to users table\n  - amount (DECIMAL): total amount paid\n  - payment_method (VARCHAR): cash, card, wallet, upi\n  - status (VARCHAR): success, failed, refunded, pending\n  - paid_at (TIMESTAMPTZ): timestamp when payment was processed\n  - refunded_at (TIMESTAMPTZ): timestamp when refund was issued, null if not refunded"
+  },
+  {
+    "workspace": "payments",
+    "table_name": "promotions",
+    "content": "Table: promotions\nDescription: Tracks discount codes and promotional offers.\nColumns:\n  - promo_id (UUID): unique identifier for each promotion\n  - code (VARCHAR): promo code string\n  - discount_type (VARCHAR): flat or percentage\n  - discount_value (DECIMAL): amount or percentage off\n  - min_fare (DECIMAL): minimum fare required to apply the promo\n  - max_uses (INTEGER): maximum total redemptions allowed\n  - used_count (INTEGER): how many times it has been used\n  - valid_from (TIMESTAMPTZ): promo start date\n  - valid_until (TIMESTAMPTZ): promo expiry date\n  - city (VARCHAR): city where the promo is valid, null means all cities"
+  },
+  {
+    "workspace": "users",
+    "table_name": "users",
+    "content": "Table: users\nDescription: Stores all registered users of the platform.\nColumns:\n  - user_id (UUID): unique identifier for each user\n  - email (VARCHAR): user email address\n  - full_name (VARCHAR): user full name\n  - phone_number (VARCHAR): user contact number\n  - city (VARCHAR): city where user is registered\n  - status (VARCHAR): active, inactive, banned\n  - created_at (TIMESTAMPTZ): when the user account was created\n  - last_login_at (TIMESTAMPTZ): last time the user logged in"
+  },
+  {
+    "workspace": "support",
+    "table_name": "support_tickets",
+    "content": "Table: support_tickets\nDescription: Tracks customer support requests raised by users or drivers.\nColumns:\n  - ticket_id (UUID): unique identifier for each ticket\n  - raised_by_id (UUID): id of the user or driver who raised the ticket\n  - raised_by_type (VARCHAR): user or driver\n  - trip_id (UUID): associated trip id, null if not trip-related\n  - category (VARCHAR): payment, safety, app_issue, driver_behaviour, other\n  - description (TEXT): detailed description of the issue\n  - status (VARCHAR): open, in_progress, resolved, closed\n  - priority (VARCHAR): low, medium, high, critical\n  - created_at (TIMESTAMPTZ): when the ticket was raised\n  - resolved_at (TIMESTAMPTZ): when the ticket was resolved, null if still open"
+  },
+  {
+    "workspace": "quality",
+    "table_name": "ratings",
+    "content": "Table: ratings\nDescription: Stores ratings and reviews given after each trip.\nColumns:\n  - rating_id (UUID): unique identifier for each rating\n  - trip_id (UUID): foreign key to trips table\n  - rated_by (VARCHAR): user or driver — who gave the rating\n  - rated_entity_id (UUID): id of the user or driver being rated\n  - score (INTEGER): rating score from 1 to 5\n  - feedback (TEXT): optional written feedback\n  - created_at (TIMESTAMPTZ): when the rating was submitted"
+  }
+]

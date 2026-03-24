@@ -22,7 +22,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(me
 log = logging.getLogger(__name__)
 
 EMBED_MODEL = "nomic-embed-text"
-LLM_MODEL = "qwen3:8b"
+LLM_MODEL = "qwen3:4b"
 WEAVIATE_URL = "http://localhost:8080"
 
 # Uber V1: "custom business instructions" baked into the prompt.
@@ -152,7 +152,7 @@ def query(question: str) -> dict:
 
         # Step 5: LLM generates SQL + explanation
         log.info("Calling LLM...")
-        response = ollama.generate(model=LLM_MODEL, prompt=prompt, options={"temperature": 0})
+        response = ollama.generate(model=LLM_MODEL, prompt=prompt, options={"temperature": 0, "think": False})
         result = parse_output(response["response"].strip())
 
         return {

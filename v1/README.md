@@ -29,7 +29,59 @@ they would go ask a data engineer — slow, blocks both parties, does not scale 
 
 QueryGPT's answer: type the question in English, get SQL back.
 
+A non-technical person types a plain English question into a program or interface.
+QueryGPT returns the SQL query that answers it. That is the whole idea.
+
+For example:
+
+```text
+Input:  "How many trips got cancelled in Mumbai last week?"
+
+Output: SELECT COUNT(*) AS cancelled_trips
+        FROM trips
+        WHERE status = 'cancelled'
+          AND pickup_city = 'Mumbai'
+          AND request_time >= NOW() - INTERVAL '7 days';
+```
+
+No SQL knowledge needed. No waiting for a data engineer. The person gets the query,
+runs it against the database, and has their answer.
+
 ---
+
+## How It Works
+
+Three separate systems work together. The vector DB never touches your actual data rows.
+
+```text
+Vector DB  →  finds the right schema (what tables/columns exist)
+LLM        →  writes the SQL using that schema
+Your DB    →  runs the SQL and returns the real answer
+```
+
+End to end:
+
+```text
+User asks: "How many people went to Mumbai?"
+              |
+         embed question → [0.23, -0.87, ...]   (a list of floats = the meaning)
+              |
+         match against stored schema vectors in vector DB
+              |
+         finds: trips table schema (most similar meaning)
+              |
+         feeds schema to LLM
+              |
+         LLM writes: SELECT COUNT(*) FROM trips WHERE pickup_city = 'Mumbai';
+              |
+         YOU run that SQL against your real PostgreSQL
+              |
+         get the actual answer: 52
+```
+
+The LLM already knows SQL. What it does not know is your database. The vector DB
+gives it that knowledge — not your data, just your structure (table names, columns,
+what each table holds, how they relate).
 
 ## What V1 Is
 

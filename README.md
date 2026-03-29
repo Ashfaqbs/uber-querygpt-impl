@@ -12,6 +12,40 @@ The problem it solves: Uber's data platform handles 1.2 million queries per mont
 Writing each query requires finding the right table, understanding the schema, then writing SQL.
 That takes ~10 minutes per query on average. QueryGPT reduces it to ~3 minutes.
 
+## How It Works
+
+Three separate systems work together. The vector DB never touches your actual data rows.
+
+```
+Vector DB  →  finds the right schema (what tables/columns exist)
+LLM        →  writes the SQL using that schema
+Your DB    →  runs the SQL and returns the real answer
+```
+
+End to end:
+
+```
+User asks: "How many people went to Mumbai?"
+              |
+         embed question → [0.23, -0.87, ...]   (a list of floats = the meaning)
+              |
+         match against stored schema vectors in vector DB
+              |
+         finds: trips table schema (most similar meaning)
+              |
+         feeds schema to LLM
+              |
+         LLM writes: SELECT COUNT(*) FROM trips WHERE pickup_city = 'Mumbai';
+              |
+         YOU run that SQL against your real PostgreSQL
+              |
+         get the actual answer: 52
+```
+
+The LLM already knows SQL. What it does not know is your database. The vector DB
+gives it that knowledge — not your data, just your structure (table names, columns,
+what each table holds, how they relate).
+
 ## What This Repo Contains
 
 Two implementations, matching Uber's two versions described in their engineering blog:
